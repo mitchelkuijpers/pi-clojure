@@ -202,6 +202,9 @@ export default function (pi: ExtensionAPI) {
             type: "text",
             text: `[clojure-paren-repair] Failed to run clj-paren-repair on ${filePath}: ${message}`,
           });
+        } finally {
+          // Record completion time so follow-up tool_result events from this run remain debounced.
+          lastRepairRunByPath.set(absolutePath, Date.now());
         }
       }
     }
@@ -226,6 +229,9 @@ export default function (pi: ExtensionAPI) {
             type: "text",
             text: `[clojure-fmt] Failed to run bb fmt:file on ${filePath}: ${message}`,
           });
+        } finally {
+          // Record completion time so follow-up tool_result events from this run remain debounced.
+          lastFormatRunByPath.set(absolutePath, Date.now());
         }
       }
     }

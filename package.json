@@ -25,6 +25,9 @@
     ]
   },
   "scripts": {
+    "test": "vitest run",
+    "test:unit": "vitest run",
+    "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "smoke:offline": "bash ./scripts/smoke-offline.sh",
     "smoke:e2e": "bash ./scripts/smoke-e2e.sh",
@@ -36,6 +39,7 @@
   "devDependencies": {
     "@mariozechner/pi-coding-agent": "^0.54.0",
     "@types/node": "^24.3.0",
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.3",
+    "vitest": "^3.2.4"
   }
 }
