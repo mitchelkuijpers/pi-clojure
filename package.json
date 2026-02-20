@@ -1,0 +1,41 @@
+{
+  "name": "@mitchelkuijpers/pi-clojure",
+  "version": "0.1.0",
+  "description": "PI package for Clojure and ClojureScript development workflows",
+  "type": "module",
+  "license": "MIT",
+  "keywords": [
+    "pi-package",
+    "clojure",
+    "clojurescript",
+    "repl",
+    "developer-tools"
+  ],
+  "files": [
+    "extensions",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "pi": {
+    "extensions": [
+      "./extensions/*.ts"
+    ]
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "smoke:offline": "bash ./scripts/smoke-offline.sh",
+    "smoke:e2e": "bash ./scripts/smoke-e2e.sh",
+    "smoke": "bash ./scripts/smoke.sh"
+  },
+  "peerDependencies": {
+    "@mariozechner/pi-coding-agent": "*"
+  },
+  "devDependencies": {
+    "@mariozechner/pi-coding-agent": "^0.54.0",
+    "@types/node": "^24.3.0",
+    "typescript": "^5.7.3"
+  }
+}

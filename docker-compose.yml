@@ -1,0 +1,18 @@
+services:
+  dev:
+    image: pi-clojure-dev:local
+    build:
+      context: .
+      dockerfile: Dockerfile
+    working_dir: /workspace
+    volumes:
+      - .:/workspace
+      - ${HOME}/.pi/agent:/home/piuser/.pi/agent
+    stdin_open: true
+    tty: true
+    environment:
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY:-}
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
