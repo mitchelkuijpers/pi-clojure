@@ -4,23 +4,46 @@ PI package that adds automatic Clojure repair/format behavior to PI sessions.
 
 ## Quick Start
 
-1. Install required tools (`pi`, `clj-paren-repair`, `cljfmt`), or use Docker from this repo.
-2. Install the package:
+Install required tooling for this extension:
+- `clj-paren-repair` (provided by `clojure-mcp-light`)
+- `cljfmt`
+
+Quick check:
+
+```bash
+command -v clj-paren-repair
+command -v cljfmt
+```
+
+Install from local path (recommended while developing)
 
 ```bash
 pi install /absolute/path/to/pi-clojure -l
 ```
 
-3. Verify installation:
+Install from npm
+
+```bash
+pi install npm:@mitchelkuijpers/pi-clojure@0.1.0
+```
+
+Install from git
+
+```bash
+pi install git:github.com/mitchelkuijpers/pi-clojure
+```
+
+Verify installation
 
 ```bash
 pi list
 ```
 
-4. Edit or write a `.clj`, `.cljs`, `.cljc`, `.bb`, `.edn`, or `.lpy` file in PI.
-5. Use these commands any time:
-   - `/clojure-paren-repair on|off|status`
-   - `/clojure-fmt on|off|status`
+Then edit or write a `.clj`, `.cljs`, `.cljc`, `.bb`, `.edn`, or `.lpy` file in PI.
+
+Use these commands any time:
+- `/clojure-paren-repair on|off|status`
+- `/clojure-fmt on|off|status`
 
 ## What This Package Provides
 
@@ -36,6 +59,10 @@ It adds these integrations to PI sessions:
 - Session command integration:
   - Adds `/clojure-paren-repair` and `/clojure-fmt` commands.
   - Persists on/off state between sessions.
+
+Tooling required by these integrations:
+- `clj-paren-repair` (from `clojure-mcp-light`)
+- `cljfmt`
 
 Supported file extensions:
 - `.clj`
@@ -69,7 +96,6 @@ The package uses explicit `pi` manifest paths in `package.json`:
 
 Install these tools first:
 - Required for extension runtime:
-  - `pi`
   - `clj-paren-repair`
   - `cljfmt`
 - Required for this repo's full dev/smoke workflow:
@@ -79,7 +105,7 @@ Install these tools first:
 Quick check:
 
 ```bash
-for tool in pi clj-paren-repair cljfmt bb clj-nrepl-eval; do command -v "$tool"; done
+for tool in clj-paren-repair cljfmt bb clj-nrepl-eval; do command -v "$tool"; done
 ```
 
 If you do not want to install these locally, use the Docker workflow below (all tools are preinstalled there).
