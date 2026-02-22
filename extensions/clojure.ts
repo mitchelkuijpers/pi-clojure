@@ -6,7 +6,21 @@ const PAREN_STATE_ENTRY_TYPE = "auto-paren-repair/state";
 const FORMAT_STATE_ENTRY_TYPE = "auto-cljfmt/state";
 const CLOJURE_EXTENSIONS = new Set([".clj", ".cljs", ".cljc", ".bb", ".edn", ".lpy"]);
 const DEBOUNCE_MS = 300;
+const STALE_RUN_STATE_MS = 5 * 60_000;
 const MAX_SNIPPET_CHARS = 600;
+
+function cleanupStaleRunState(
+  runByPath: Map<string, number>,
+  inFlightByPath: Set<string>,
+  now: number,
+): void {
+  for (const [path, timestamp] of runByPath.entries()) {
+    if (inFlightByPath.has(path)) continue;
+    if (now - timestamp > STALE_RUN_STATE_MS) {
+      runByPath.delete(path);
+    }
+  }
+}
 
 function normalizePath(path: string): string {
   return path.startsWith("@") ? path.slice(1) : path;
@@ -88,6 +102,8 @@ export default function (pi: ExtensionAPI) {
 
   const lastRepairRunByPath = new Map<string, number>();
   const lastFormatRunByPath = new Map<string, number>();
+  const repairInFlightByPath = new Set<string>();
+  const formatInFlightByPath = new Set<string>();
 
   pi.on("session_start", async (_event, ctx) => {
     parenRepairEnabled = loadEnabledState(ctx, PAREN_STATE_ENTRY_TYPE, true);
@@ -183,13 +199,18 @@ export default function (pi: ExtensionAPI) {
     const updates: Array<{ type: "text"; text: string }> = [];
     const now = Date.now();
 
-    if (parenRepairEnabled) {
+    cleanupStaleRunState(lastRepairRunByPath, repairInFlightByPath, now);
+    cleanupStaleRunState(lastFormatRunByPath, formatInFlightByPath, now);
+
+    if (parenRepairEnabled && !repairInFlightByPath.has(absolutePath)) {
       const lastRepairRun = lastRepairRunByPath.get(absolutePath) ?? 0;
       if (now - lastRepairRun >= DEBOUNCE_MS) {
         lastRepairRunByPath.set(absolutePath, now);
+        repairInFlightByPath.add(absolutePath);
 
         try {
           const result = await pi.exec("clj-paren-repair", [absolutePath], {
+            cwd: ctx.cwd,
             timeout: 30_000,
           });
           updates.push({
@@ -203,16 +224,18 @@ export default function (pi: ExtensionAPI) {
             text: `[clojure-paren-repair] Failed to run clj-paren-repair on ${filePath}: ${message}`,
           });
         } finally {
+          repairInFlightByPath.delete(absolutePath);
           // Record completion time so follow-up tool_result events from this run remain debounced.
           lastRepairRunByPath.set(absolutePath, Date.now());
         }
       }
     }
 
-    if (formatEnabled) {
+    if (formatEnabled && !formatInFlightByPath.has(absolutePath)) {
       const lastFormatRun = lastFormatRunByPath.get(absolutePath) ?? 0;
       if (now - lastFormatRun >= DEBOUNCE_MS) {
         lastFormatRunByPath.set(absolutePath, now);
+        formatInFlightByPath.add(absolutePath);
 
         try {
           const result = await pi.exec("cljfmt", ["fix", absolutePath], {
@@ -230,6 +253,7 @@ export default function (pi: ExtensionAPI) {
             text: `[clojure-fmt] Failed to run cljfmt fix on ${filePath}: ${message}`,
           });
         } finally {
+          formatInFlightByPath.delete(absolutePath);
           // Record completion time so follow-up tool_result events from this run remain debounced.
           lastFormatRunByPath.set(absolutePath, Date.now());
         }
