@@ -2,16 +2,42 @@
 
 PI package that adds automatic Clojure repair/format behavior to PI sessions.
 
-## What This Package Offers
+## Quick Start
+
+1. Install required tools (`pi`, `clj-paren-repair`, `cljfmt`), or use Docker from this repo.
+2. Install the package:
+
+```bash
+pi install /absolute/path/to/pi-clojure -l
+```
+
+3. Verify installation:
+
+```bash
+pi list
+```
+
+4. Edit or write a `.clj`, `.cljs`, `.cljc`, `.bb`, `.edn`, or `.lpy` file in PI.
+5. Use these commands any time:
+   - `/clojure-paren-repair on|off|status`
+   - `/clojure-fmt on|off|status`
+
+## What This Package Provides
 
 This package ships one extension: `extensions/clojure.ts`.
 
-The extension listens to `edit` and `write` tool results and, for Clojure-related files, runs:
+It adds these integrations to PI sessions:
+- Auto paren repair integration:
+  - Triggers on `edit`/`write` tool results.
+  - Runs `clj-paren-repair <file>`.
+- Auto formatting integration:
+  - Triggers on `edit`/`write` tool results.
+  - Runs `cljfmt fix <file>`.
+- Session command integration:
+  - Adds `/clojure-paren-repair` and `/clojure-fmt` commands.
+  - Persists on/off state between sessions.
 
-- `clj-paren-repair <file>`
-- `cljfmt fix <file>`
-
-Supported extensions:
+Supported file extensions:
 - `.clj`
 - `.cljs`
 - `.cljc`
@@ -19,13 +45,20 @@ Supported extensions:
 - `.edn`
 - `.lpy`
 
-You can control behavior in-session with:
-- `/clojure-paren-repair on|off|status`
-- `/clojure-fmt on|off|status`
+How to use:
+1. Install the package (see Installation below).
+2. Edit or write a supported Clojure file in PI.
+3. The extension automatically runs repair/format steps and appends summaries to tool output.
 
-State is persisted through custom entries:
-- `auto-paren-repair/state`
-- `auto-cljfmt/state`
+Turn integrations on/off:
+- Paren repair:
+  - `/clojure-paren-repair status`
+  - `/clojure-paren-repair off`
+  - `/clojure-paren-repair on`
+- Formatting:
+  - `/clojure-fmt status`
+  - `/clojure-fmt off`
+  - `/clojure-fmt on`
 
 The package uses explicit `pi` manifest paths in `package.json`:
 - `pi.extensions`: `./extensions/*.ts`
@@ -34,7 +67,22 @@ The package uses explicit `pi` manifest paths in `package.json`:
 
 ### Prerequisite
 
-Install PI first (CLI command must be available as `pi`).
+Install these tools first:
+- Required for extension runtime:
+  - `pi`
+  - `clj-paren-repair`
+  - `cljfmt`
+- Required for this repo's full dev/smoke workflow:
+  - `bb`
+  - `clj-nrepl-eval`
+
+Quick check:
+
+```bash
+for tool in pi clj-paren-repair cljfmt bb clj-nrepl-eval; do command -v "$tool"; done
+```
+
+If you do not want to install these locally, use the Docker workflow below (all tools are preinstalled there).
 
 ### Install from local path (recommended while developing)
 
