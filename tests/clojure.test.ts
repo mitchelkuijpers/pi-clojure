@@ -165,10 +165,11 @@ describe("clojure extension", () => {
 
     expect(harness.execCalls).toHaveLength(2);
     expect(harness.execCalls[0]?.command).toBe("clj-paren-repair");
-    expect(harness.execCalls[1]?.command).toBe("bb");
+    expect(harness.execCalls[1]?.command).toBe("cljfmt");
+    expect(harness.execCalls[1]?.args).toStrictEqual(["fix", "/workspace/src/core.clj"]);
     expect(result?.content).toHaveLength(3);
     expect(result?.content[1]?.text ?? "").toMatch(/\[clojure-paren-repair\]/);
-    expect(result?.content[2]?.text ?? "").toMatch(/\[clojure-fmt\]/);
+    expect(result?.content[2]?.text ?? "").toMatch(/Ran cljfmt fix/);
   });
 
   it("debounce uses completion time to suppress follow-up events after slow runs", async () => {

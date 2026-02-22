@@ -1,43 +1,75 @@
 # @mitchelkuijpers/pi-clojure
 
-PI package scaffold for Clojure and ClojureScript development workflows.
+PI package that adds automatic Clojure repair/format behavior to PI sessions.
 
-## What This Package Provides
+## What This Package Offers
 
-- TypeScript extension: `extensions/clojure.ts`
+This package ships one extension: `extensions/clojure.ts`.
+
+The extension listens to `edit` and `write` tool results and, for Clojure-related files, runs:
+
+- `clj-paren-repair <file>`
+- `cljfmt fix <file>`
+
+Supported extensions:
+- `.clj`
+- `.cljs`
+- `.cljc`
+- `.bb`
+- `.edn`
+- `.lpy`
+
+You can control behavior in-session with:
+- `/clojure-paren-repair on|off|status`
+- `/clojure-fmt on|off|status`
+
+State is persisted through custom entries:
+- `auto-paren-repair/state`
+- `auto-cljfmt/state`
 
 The package uses explicit `pi` manifest paths in `package.json`:
-
 - `pi.extensions`: `./extensions/*.ts`
 
-## Local Package Usage
+## Installation
 
-Install this package from a local path:
+### Prerequisite
+
+Install PI first (CLI command must be available as `pi`).
+
+### Install from local path (recommended while developing)
 
 ```bash
 pi install /absolute/path/to/pi-clojure -l
 ```
 
-Install from npm (after publish):
+### Install from npm
 
 ```bash
 pi install npm:@mitchelkuijpers/pi-clojure@0.1.0
 ```
 
-Install from git:
+### Install from git
 
 ```bash
 pi install git:github.com/mitchelkuijpers/pi-clojure
 ```
 
-## Docker Dev/Test Environment
+### Verify installation
+
+```bash
+pi list
+```
+
+Look for `@mitchelkuijpers/pi-clojure` in the output.
+
+## Docker Development Environment
 
 The container includes:
 - `pi`
+- `bb`
+- `cljfmt`
 - `clj-paren-repair`
 - `clj-nrepl-eval`
-- `cljfmt`
-- `bb`
 
 It also bind-mounts your host `~/.pi/agent` into `/home/piuser/.pi/agent` so the container reuses your existing Pi auth/settings.
 
@@ -59,25 +91,25 @@ Run smoke checks inside the container:
 docker compose run --rm dev bash -lc "npm run smoke"
 ```
 
-Run optional API-backed E2E (example with Anthropic):
+Run optional API-backed E2E:
 
 ```bash
 ANTHROPIC_API_KEY=your_key_here docker compose run --rm dev bash -lc "npm run smoke:e2e"
 ```
 
-## Smoke Test Breakdown
+## Development Validation
 
+Preferred validation path:
+
+```bash
+docker compose build dev
+docker compose run --rm dev bash -lc "npm run smoke"
+```
+
+Smoke scripts:
 - `npm run smoke:offline`
-  - Installs dependencies
-  - Runs TypeScript checks
-  - Verifies `pi` CLI availability
-  - Verifies `bb`, `cljfmt`, `clj-paren-repair`, and `clj-nrepl-eval` are installed
-  - Installs package locally with `pi install <path> -l`
-  - Asserts local source path appears in `pi list` and package name metadata is correct
-  - Validates extension file exists
 - `npm run smoke:e2e`
-  - Runs only when one of `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, or `GOOGLE_API_KEY` is set
-  - Executes a minimal `pi -p` call with explicit `-e`
+- `npm run smoke`
 
 ## Troubleshooting
 

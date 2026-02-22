@@ -50,9 +50,9 @@ function buildFormatSummary(path: string, stdout: string, stderr: string, code: 
   const parts: string[] = [];
 
   if (code === 0) {
-    parts.push(`[clojure-fmt] Ran bb fmt:file on ${path}.`);
+    parts.push(`[clojure-fmt] Ran cljfmt fix on ${path}.`);
   } else {
-    parts.push(`[clojure-fmt] bb fmt:file failed for ${path} (exit ${code}).`);
+    parts.push(`[clojure-fmt] cljfmt fix failed for ${path} (exit ${code}).`);
   }
 
   const out = clip(stdout);
@@ -134,7 +134,7 @@ export default function (pi: ExtensionAPI) {
   });
 
   pi.registerCommand("clojure-fmt", {
-    description: "Control auto bb fmt:file: /clojure-fmt on|off|status",
+    description: "Control auto cljfmt fix: /clojure-fmt on|off|status",
     handler: async (args, ctx) => {
       const command = args.trim().toLowerCase();
 
@@ -215,7 +215,7 @@ export default function (pi: ExtensionAPI) {
         lastFormatRunByPath.set(absolutePath, now);
 
         try {
-          const result = await pi.exec("bb", ["fmt:file", absolutePath], {
+          const result = await pi.exec("cljfmt", ["fix", absolutePath], {
             cwd: ctx.cwd,
             timeout: 60_000,
           });
@@ -227,7 +227,7 @@ export default function (pi: ExtensionAPI) {
           const message = error instanceof Error ? error.message : String(error);
           updates.push({
             type: "text",
-            text: `[clojure-fmt] Failed to run bb fmt:file on ${filePath}: ${message}`,
+            text: `[clojure-fmt] Failed to run cljfmt fix on ${filePath}: ${message}`,
           });
         } finally {
           // Record completion time so follow-up tool_result events from this run remain debounced.
