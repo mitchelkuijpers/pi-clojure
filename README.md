@@ -175,6 +175,13 @@ The container includes:
 
 It also bind-mounts your host `~/.pi/agent` into `/home/piuser/.pi/agent` so the container reuses your existing Pi auth/settings.
 
+The compose setup also mounts host `~/.gitconfig` into the container so git identity/settings are available for commits made in-container. If you do not have this file yet, create it once on host with:
+
+```bash
+git config --global user.name "Your Name"
+git config --global user.email "you@example.com"
+```
+
 Build the image:
 
 ```bash
@@ -220,6 +227,8 @@ Smoke scripts:
   - Use the Docker image where `@mariozechner/pi-coding-agent` is preinstalled.
 - `~/.pi/agent` mount errors
   - Ensure the host directory exists: `mkdir -p ~/.pi/agent`.
+- `~/.gitconfig` mount errors
+  - Ensure host git config exists: `git config --global user.name "Your Name" && git config --global user.email "you@example.com"`.
 - `package not found in pi list` after install
   - Confirm the install path and that `package.json` contains a `pi` manifest.
 - API-backed E2E skipped
