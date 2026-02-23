@@ -44,6 +44,8 @@ RUN mkdir -p /home/piuser/.local/bin /home/piuser/.npm-global \
 
 USER piuser
 
+RUN git config --global --add safe.directory /workspace
+
 RUN bbin install https://github.com/bhauman/clojure-mcp-light.git --tag "${CLOJURE_MCP_LIGHT_TAG}" --as clj-paren-repair --main-opts '["-m" "clojure-mcp-light.paren-repair"]' \
   && bbin install https://github.com/bhauman/clojure-mcp-light.git --tag "${CLOJURE_MCP_LIGHT_TAG}" --as clj-nrepl-eval --main-opts '["-m" "clojure-mcp-light.nrepl-eval"]'
 

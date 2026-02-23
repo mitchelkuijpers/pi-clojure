@@ -8,6 +8,7 @@ services:
     volumes:
       - .:/workspace
       - ${HOME}/.pi/agent:/home/piuser/.pi/agent
+      - ${HOME}/.gitconfig:/home/piuser/.gitconfig:ro
     stdin_open: true
     tty: true
     environment:
