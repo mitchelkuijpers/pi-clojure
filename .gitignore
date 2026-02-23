@@ -1,6 +1,8 @@
 node_modules/
 .npm/
 .pi/
+.clj-kondo/
+.lsp/
 .DS_Store
 *.log
 coverage/
