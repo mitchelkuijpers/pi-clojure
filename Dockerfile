@@ -8,27 +8,30 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update \
   && apt-get install -y --no-install-recommends \
-    bash \
-    ca-certificates \
-    curl \
-    git \
-    nodejs \
-    npm \
-    openjdk-21-jdk \
-    rlwrap \
-    unzip \
-    xz-utils \
+  bash \
+  build-essential \
+  ca-certificates \
+  curl \
+  tmux \
+  git \
+  nodejs \
+  npm \
+  openjdk-21-jdk \
+  rlwrap \
+  ripgrep \
+  unzip \
+  xz-utils \
   && rm -rf /var/lib/apt/lists/*
 
 RUN case "${TARGETARCH}" in \
-    amd64) BB_ARCH="amd64" ;; \
-    arm64) BB_ARCH="aarch64" ;; \
-    *) echo "Unsupported TARGETARCH: ${TARGETARCH}" && exit 1 ;; \
+  amd64) BB_ARCH="amd64" ;; \
+  arm64) BB_ARCH="aarch64" ;; \
+  *) echo "Unsupported TARGETARCH: ${TARGETARCH}" && exit 1 ;; \
   esac \
   && curl -fsSL "https://github.com/babashka/babashka/releases/download/v${BABASHKA_VERSION}/babashka-${BABASHKA_VERSION}-linux-${BB_ARCH}-static.tar.gz" \
   | tar -xz -C /usr/local/bin bb
 
-RUN npm install -g @mariozechner/pi-coding-agent
+RUN npm install -g @mariozechner/pi-coding-agent@0.54.2
 
 RUN useradd --create-home --shell /bin/bash piuser
 ENV NPM_CONFIG_PREFIX="/home/piuser/.npm-global"

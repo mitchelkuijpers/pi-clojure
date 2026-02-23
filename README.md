@@ -5,7 +5,8 @@ PI package that adds automatic Clojure repair/format behavior to PI sessions.
 ## Quick Start
 
 Install required tooling for this extension:
-- `clj-paren-repair` (provided by `clojure-mcp-light`)
+
+- `clj-paren-repair` (provided by [clojure-mcp-light](https://github.com/bhauman/clojure-mcp-light/tree/main?tab=readme-ov-file#clj-paren-repair))
 - `cljfmt`
 
 Quick check:
@@ -42,6 +43,7 @@ pi list
 Then edit or write a `.clj`, `.cljs`, `.cljc`, `.bb`, `.edn`, or `.lpy` file in PI.
 
 Use these commands any time:
+
 - `/clojure-paren-repair on|off|status`
 - `/clojure-fmt on|off|status`
 
@@ -50,6 +52,7 @@ Use these commands any time:
 This package ships one extension: `extensions/clojure.ts`.
 
 It adds these integrations to PI sessions:
+
 - Auto paren repair integration:
   - Triggers on `edit`/`write` tool results.
   - Runs `clj-paren-repair <file>`.
@@ -61,10 +64,12 @@ It adds these integrations to PI sessions:
   - Persists on/off state between sessions.
 
 Tooling required by these integrations:
+
 - `clj-paren-repair` (from `clojure-mcp-light`)
 - `cljfmt`
 
 Supported file extensions:
+
 - `.clj`
 - `.cljs`
 - `.cljc`
@@ -73,11 +78,13 @@ Supported file extensions:
 - `.lpy`
 
 How to use:
+
 1. Install the package (see Installation below).
 2. Edit or write a supported Clojure file in PI.
 3. The extension automatically runs repair/format steps and appends summaries to tool output.
 
 Turn integrations on/off:
+
 - Paren repair:
   - `/clojure-paren-repair status`
   - `/clojure-paren-repair off`
@@ -88,6 +95,7 @@ Turn integrations on/off:
   - `/clojure-fmt on`
 
 The package uses explicit `pi` manifest paths in `package.json`:
+
 - `pi.extensions`: `./extensions/*.ts`
 
 ## Installation
@@ -95,6 +103,7 @@ The package uses explicit `pi` manifest paths in `package.json`:
 ### Prerequisite
 
 Install these tools first:
+
 - Required for extension runtime:
   - `clj-paren-repair`
   - `cljfmt`
@@ -136,14 +145,33 @@ pi list
 
 Look for `@mitchelkuijpers/pi-clojure` in the output.
 
+## Example Project
+
+A minimal example Clojure project is available at:
+
+- `examples/basic-clojure`
+
+It includes local PI package wiring in `examples/basic-clojure/.pi/settings.json`:
+
+- `"packages": ["../.."]`
+
+Run it from the example directory:
+
+```bash
+cd examples/basic-clojure
+pi
+```
+
 ## Docker Development Environment
 
 The container includes:
+
 - `pi`
 - `bb`
 - `cljfmt`
 - `clj-paren-repair`
 - `clj-nrepl-eval`
+- `tmux`
 
 It also bind-mounts your host `~/.pi/agent` into `/home/piuser/.pi/agent` so the container reuses your existing Pi auth/settings.
 
@@ -181,6 +209,7 @@ docker compose run --rm dev bash -lc "npm run smoke"
 ```
 
 Smoke scripts:
+
 - `npm run smoke:offline`
 - `npm run smoke:e2e`
 - `npm run smoke`

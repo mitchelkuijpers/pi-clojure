@@ -1,0 +1,8 @@
+# Clojure/deps.edn runtime artifacts
+.cpcache/
+.nrepl-port
+.repl-history
+
+# Local editor/tooling state
+.lsp/
+.clj-kondo/
